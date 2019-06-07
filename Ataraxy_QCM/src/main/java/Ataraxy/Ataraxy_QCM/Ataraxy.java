@@ -2,11 +2,14 @@ package Ataraxy.Ataraxy_QCM;
 
 import org.jgrapht.*;
 import org.jgrapht.alg.color.GreedyColoring;
+import org.jgrapht.alg.color.LargestDegreeFirstColoring;
 import org.jgrapht.alg.color.SaturationDegreeColoring;
+import org.jgrapht.alg.color.SmallestDegreeLastColoring;
 import org.jgrapht.alg.connectivity.*;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.*;
 import org.jgrapht.alg.interfaces.*;
 import org.jgrapht.alg.shortestpath.*;
+import org.jgrapht.experimental.BrownBacktrackColoring;
 import org.jgrapht.graph.*;
 
 import java.util.*;
@@ -119,29 +122,116 @@ public class Ataraxy {
 		
 	}
 	
+	
 	public void coloration() {
-		SaturationDegreeColoring<String, DefaultEdge> coloration =
-	            new SaturationDegreeColoring<>(g);
-		System.out.println(coloration.getColoring());
 		
+		LargestDegreeFirstColoring<String, DefaultEdge> coloration =
+	            new LargestDegreeFirstColoring<>(g);
+		System.out.println(coloration.getColoring());
+		Map<String, Integer> colors = coloration.getColoring().getColors();
+		int size = colors.size();
+		String[] keys = new String[size];
+		int i =  0;
+		for ( String key : colors.keySet() ) {
+		    keys[i] = key;
+		    i++;
+		}
+		
+		String s = "";
+		for(i=0;i<size;i++) {
+			int max=i;
+			System.out.println("max"+max);
+			for(int j =i+1;j<size;j++) {
+				System.out.println("j"+j);
+				if(g.degreeOf(keys[j]) > g.degreeOf(keys[max]) || (g.degreeOf(keys[j]) >= g.degreeOf(keys[max]) && (int)keys[j].charAt(0)<(int)keys[max].charAt(0))) {
+					max = j;
+				}
+			}
+			String tmp = keys[i];
+			keys[i] = keys[max];
+			keys[max]= tmp;
+			
+		}
+		i=0;
+		for(String key : keys ) {
+			int n = colors.get(keys[i]) + 1;
+			s+=keys[i]+"="+n+" ";
+			i++;
+		}
+		System.out.println(s);
+		/*
 		//verifier si la reponse est juste
+		while(true) {
 		Scanner input = new Scanner(System.in);
 		String in = input.nextLine();
 		int loc = in.indexOf("Coul");
+		int loc1 = in.indexOf("Som");
+		int loc2 = in.indexOf("DSAT_{1}");
+		String sommet = in.substring(loc1+4,loc2);
+		System.out.println(sommet);
+		StringTokenizer st = new StringTokenizer(sommet,"&");
+		int size1 = st.countTokens();
+		String[] somList = new String[size1];
+		int i=0;
+		while(st.hasMoreTokens()) {
+			somList[i] = Character.toString(st.nextToken().charAt(1));
+			System.out.println(somList[i]);
+			i++;
+		}
+		
+		
 		String coul = in.substring(loc+5,in.length()-1);
 		System.out.println(coul);
 		StringTokenizer st1 = new StringTokenizer(coul,"&");
 		int size = st1.countTokens();
 		int[] coulList = new int[size];
-		int i=0;
+		i=0;
 		while(st1.hasMoreTokens()) {
 			coulList[i] = Character.getNumericValue(st1.nextToken().charAt(1));
 			System.out.println(coulList[i]);
 			i++;
 		}
-		
+
+		int numCol =1;
+		boolean wrong = false;
+		while(numCol<nbColor && !wrong) {
+			System.out.println("while");
+			ArrayList<Integer> sameColor = new ArrayList<Integer>();
+			for(int j=0;j<coulList.length;j++) {
+				if(coulList[j]==numCol) {
+				
+					sameColor.add(j);
+					System.out.println("added"+j);
+				}
+			}
+			for(i = 0; i<sameColor.size();i++) {
+				for(int j = 0; j<sameColor.size();j++) {
+					System.out.println(somList[sameColor.get(i)]+" ----> "+somList[sameColor.get(j)]);
+					if(g.containsEdge(somList[sameColor.get(i)], somList[sameColor.get(j)])) {
+						wrong = true;
+						System.out.println("wrong answer!");
+						break;
+					}
+				}
+				if(wrong) {
+					break;
+				}
+			}
+			numCol++;
+		}
+		if(wrong) {
+			System.out.println("wrong answer!");
+		}
+		else {
+			System.out.println("good answer!");
+			break;
+		}
+		System.out.println(numCol);
+		}
+		*/
 		//verifier les deux sommets qui ont le meme couleur a une arc
 		// si oui return false
+		
 	}
 	
 	public void test() {
@@ -214,6 +304,7 @@ public class Ataraxy {
 	
 	public static void main(String[] args) {
 		Ataraxy a = new Ataraxy();
-		a.test();
+		
+		System.out.println((int)'A');
 	}
 }
