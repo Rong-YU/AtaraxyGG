@@ -1,11 +1,13 @@
 package Ataraxy.Ataraxy_QCM;
 
 import org.jgrapht.*;
+import org.jgrapht.Graphs;
 import org.jgrapht.alg.color.GreedyColoring;
 import org.jgrapht.alg.color.LargestDegreeFirstColoring;
 import org.jgrapht.alg.color.SaturationDegreeColoring;
 import org.jgrapht.alg.color.SmallestDegreeLastColoring;
 import org.jgrapht.alg.connectivity.*;
+import org.jgrapht.alg.cycle.HierholzerEulerianCycle;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.*;
 import org.jgrapht.alg.interfaces.*;
 import org.jgrapht.alg.shortestpath.*;
@@ -13,13 +15,15 @@ import org.jgrapht.experimental.BrownBacktrackColoring;
 import org.jgrapht.graph.*;
 
 import java.util.*;
-import org.jgrapht.graph.DefaultEdge;
+import java.util.Map.Entry;
+
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.util.SupplierUtil;
 
 public class Ataraxy {
 	private Graph<String, DefaultEdge> g;
+	private Graph<String, DefaultEdge> g1;
 	public void inputMatrix(String input) {
 		
 			//input = input.replace("\begin{array}{c|","");
@@ -234,22 +238,79 @@ public class Ataraxy {
 		
 	}
 	
-	public void test() {
-		Scanner input = new Scanner(System.in);
-		String in = input.nextLine();
-		int loc = in.indexOf("Coul");
-		String coul = in.substring(loc+5,in.length()-1);
-		System.out.println(coul);
-		StringTokenizer st1 = new StringTokenizer(coul,"&");
-		int size = st1.countTokens();
-		int[] coulList = new int[size];
-		int i=0;
-		while(st1.hasMoreTokens()) {
-			coulList[i] = Character.getNumericValue(st1.nextToken().charAt(1));
-			System.out.println(coulList[i]);
-			i++;
+	public void numerotation_sources() {
+		int n =1 ;
+		Iterator<String> iter = new DepthFirstIterator<>(g);
+		ArrayList<String> numerotation = new ArrayList<String>();
+		ArrayList<String> sources = new ArrayList<String>();
+		ArrayList<String> couches = new ArrayList<String>();
+		while(true) {
+			while (iter.hasNext()) {
+				String vertex = iter.next();
+				if(g.inDegreeOf(vertex) == 0) {
+					sources.add(vertex);
+				}
+			}
+			String s = "{ ";
+			for(int i = 0; i<sources.size();i++) {
+				numerotation.add(sources.get(i)+"="+n);
+				s+=sources.get(i)+" ";
+				g.removeVertex(sources.get(i));
+				n+=1;
+				iter = new DepthFirstIterator<>(g);
+			}
+			s+="}";
+			couches.add(s);
+			sources.clear();
+			if(!iter.hasNext()) {
+				break;
+			}
+		}
+		System.out.println("Numbre de couches: "+ couches.size());
+		for(int i = 0;i<couches.size();i++) {
+			n = i;
+			n= i+1;
+			System.out.println("src"+n+" : "+couches.get(i));
+		}
+		
+	}
+	
+	public void numerotation_puits() {
+		int n =1 ;
+		Iterator<String> iter = new DepthFirstIterator<>(g);
+		ArrayList<String> numerotation = new ArrayList<String>();
+		ArrayList<String> sources = new ArrayList<String>();
+		ArrayList<String> couches = new ArrayList<String>();
+		while(true) {
+			while (iter.hasNext()) {
+				String vertex = iter.next();
+				if(g.outDegreeOf(vertex) == 0) {
+					sources.add(vertex);
+				}
+			}
+			String s = "{ ";
+			for(int i = 0; i<sources.size();i++) {
+				numerotation.add(sources.get(i)+"="+n);
+				s+=sources.get(i)+" ";
+				g.removeVertex(sources.get(i));
+				n+=1;
+				iter = new DepthFirstIterator<>(g);
+			}
+			s+="}";
+			couches.add(s);
+			sources.clear();
+			if(!iter.hasNext()) {
+				break;
+			}
+		}
+		System.out.println("Numbre de couches: "+ couches.size());
+		for(int i = 0;i<couches.size();i++) {
+			n = i;
+			n= i+1;
+			System.out.println("pts"+n+" : "+couches.get(i));
 		}
 	}
+	
 	
 	public void connexite() {
 		// computes all the strongly connected components of the directed graph
@@ -301,10 +362,136 @@ public class Ataraxy {
         System.out.println(print + "}");
 	}
 	
+	public void circuitEuler() {
+		HierholzerEulerianCycle eu = new HierholzerEulerianCycle();
+		if(eu.isEulerian(g)) {
+			System.out.println("good");
+		}
+	}
+	
+	public void circuitEulerien() {
+		int nbImpair =0;
+		Iterator<String> iter = new DepthFirstIterator<>(g);
+        while (iter.hasNext()) {
+        	String vertex = iter.next();
+        	if(g.degreeOf(vertex)%2 !=0) {
+        		nbImpair += 1;
+        	}
+		}
+		if(nbImpair ==2) {
+			System.out.println("Il exist une chaine eulerien");
+		}
+		else if(nbImpair ==0) {
+			System.out.println("Il exist un circuit eulerien");
+		}
+		else {
+			System.out.println("pas de circuit, pas de chaine");
+		}
+	}
+	
+	public static Map<String, String> sortMapByValue(Map<String, String> oriMap) {
+		if (oriMap == null || oriMap.isEmpty()) {
+			return null;
+		}
+		Map<String, String> sortedMap = new LinkedHashMap<String, String>();
+		List<Map.Entry<String, String>> entryList = new ArrayList<Map.Entry<String, String>>(
+				oriMap.entrySet());
+		Collections.sort(entryList, new MapValueComparator());
+ 
+		Iterator<Map.Entry<String, String>> iter = entryList.iterator();
+		Map.Entry<String, String> tmpEntry = null;
+		while (iter.hasNext()) {
+			tmpEntry = iter.next();
+			sortedMap.put(tmpEntry.getKey(), tmpEntry.getValue());
+		}
+		return sortedMap;
+	}
+
+	
+	public void coloration_v2() {
+		Iterator<String> iter = new DepthFirstIterator<>(g);
+		//ArrayList<Integer> dast = new ArrayList<Integer>();
+		Map<String, String> dast = new HashMap<String, String>();
+		Map<String, Integer> colored = new HashMap<String, Integer>();
+        while (iter.hasNext()) {
+        	String vertex = iter.next();
+        	dast.put(vertex,String.valueOf(g.outDegreeOf(vertex)));
+        	}
+        dast = sortMapByValue(dast);
+
+        //brelaz start
+        for (Map.Entry<String, String> entry : dast.entrySet()) { 
+        	String vertex = entry.getKey();
+        	Map.Entry<String, String> maxEntry = null;
+
+        	for (Map.Entry<String, String> testentry : dast.entrySet())
+        	{
+        	    if (!colored.containsKey(testentry.getKey()) && (maxEntry == null || Integer.valueOf(testentry.getValue()) >Integer.valueOf(maxEntry.getValue()) ))
+        	    {
+        	        maxEntry = testentry;
+        	    }
+        	}
+        	vertex = maxEntry.getKey();
+        	
+        	if(!colored.containsKey(vertex)) {
+        		Iterator<String> voisin = new DepthFirstIterator<>(g);
+        		int numCol = 1;
+        		boolean end = false;
+        		while(!end) {
+        			end = true;
+	        		for(Map.Entry<String, Integer> coloredList : colored.entrySet()) {
+	            		if(g.containsEdge(vertex, coloredList.getKey()) && coloredList.getValue() == numCol) {
+	                		numCol ++;
+	                		end=false;
+	                	}
+	            	}
+        		}
+        		colored.put(vertex, numCol);
+        		
+        		while (voisin.hasNext()) {
+                	String vertexVoisin = voisin.next();
+                	int nbVoisinColore = 0;
+                	for(Map.Entry<String, Integer> coloredList : colored.entrySet()) {
+                		if(g.containsEdge(vertexVoisin, coloredList.getKey())) {
+                    		nbVoisinColore ++;
+                    	}
+                	}
+                	if(nbVoisinColore>0) {
+            			dast.put(vertexVoisin,String.valueOf(nbVoisinColore));
+            		}
+                }
+        		
+        	}
+   
+        	
+        }
+        for (Map.Entry<String, Integer> entry : colored.entrySet()) {
+			dast.put(entry.getKey(),String.valueOf(entry.getValue()));
+		}
+        for (Map.Entry<String, String> entry : dast.entrySet()) {
+			System.out.print(entry.getKey() + " ");
+		}
+        System.out.println();
+        for (Map.Entry<String, String> entry : dast.entrySet()) {
+			System.out.print(entry.getValue() + " ");
+		}
+	}
+	
 	
 	public static void main(String[] args) {
 		Ataraxy a = new Ataraxy();
-		
-		System.out.println((int)'A');
+		a.inputMatrix("\\begin{array}{c|cccccccccccc}& A& B& C& D& E& F& G& H& I& J& K& L\\\\\\hline A& 0& 1& 0& 1& 1& 1& 0& 0& 0& 0& 0& 0\\\\B& 1& 0& 1& 1& 0& 0& 0& 1& 0& 0& 0& 1\\\\C& 0& 1& 0& 0& 1& 1& 0& 0& 0& 0& 1& 0\\\\D& 1& 1& 0& 0& 0& 1& 1& 0& 0& 1& 1& 0\\\\E& 1& 0& 1& 0& 0& 0& 0& 0& 1& 0& 1& 0\\\\F& 1& 0& 1& 1& 0& 0& 1& 0& 1& 1& 0& 0\\\\G& 0& 0& 0& 1& 0& 1& 0& 0& 0& 0& 1& 1\\\\H& 0& 1& 0& 0& 0& 0& 0& 0& 1& 0& 0& 0\\\\I& 0& 0& 0& 0& 1& 1& 0& 1& 0& 1& 1& 1\\\\J& 0& 0& 0& 1& 0& 1& 0& 0& 1& 0& 1& 0\\\\K& 0& 0& 1& 1& 1& 0& 1& 0& 1& 1& 0& 1\\\\L& 0& 1& 0& 0& 0& 0& 1& 0& 1& 0& 1& 0\\\\\\end{array}");
+		a.coloration_v2();
 	}
 }
+	
+	class MapValueComparator implements Comparator<Map.Entry<String, String>> {
+		 
+		@Override
+		public int compare(Entry<String, String> me1, Entry<String, String> me2) {
+	 
+			return me2.getValue().compareTo(me1.getValue());
+		}
+
+
+	}

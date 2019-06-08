@@ -264,29 +264,6 @@ public class Representation {
 		System.out.print("\n");	
 	}
 	
-	public void circuitEulerien() {
-		int nbImpair =0;
-		for(int i=0;i<size;i++) {
-			int nbArret= 0;
-			for(int j=0;j<size;j++) {
-				if(matrix[i][j]==1) {
-					nbArret++;
-				}
-			}
-			if(nbArret%2 !=0) {
-				nbImpair++;
-			}
-		}
-		if(nbImpair ==2) {
-			System.out.println("Il exist une chaine eulerien");
-		}
-		else if(nbImpair ==0) {
-			System.out.println("Il exist un circuit eulerien");
-		}
-		else {
-			System.out.println("pas de circuit, pas de chaine");
-		}
-	}
 	
 	public void numerotation() {
 		int[] num = new int[size];
@@ -308,7 +285,6 @@ public class Representation {
 				}
 			}
 		}
-		
 		while(currentNum<size) {
 			for(int i =0;i<size;i++) {
 				for(int j =0;j<size;j++) {
@@ -318,12 +294,20 @@ public class Representation {
 				}
 				
 			}
+			ArrayList<Integer> sameCouche = new ArrayList<Integer>();
 			int min=sommet.get(0); //�ҵ�ǰ�����ٵ��Ǹ���ĸ
 			for(int i =0; i<size; i++) {
 				if(nbPred[i] < nbPred[min] && nbPred[i]>=0) {
 					min =i;
 				}
 			}
+			
+			for(int i =0; i<size; i++) {
+				if(nbPred[i] < nbPred[min] && nbPred[i]>=0) {
+					min =i;
+				}
+			}
+			
 			num[min] = currentNum; 
 			
 			currentNum+=1;
@@ -380,63 +364,6 @@ public class Representation {
 		System.out.print("\n");	
 	}
 	
-	public void noyau() {
-		ArrayList<Integer> noyau = new ArrayList<Integer>();
-		ArrayList<Character> sommet = new ArrayList<Character>();
-		for(int i = 0; i<size; i++) {
-			sommet.add(Character.toUpperCase((char)(i+97)));
-		}
-		size1=size;
-		while(size1>0) {
-			ArrayList<Integer> pred = new ArrayList<Integer>();
-			for(int i =0;i<size1;i++) {
-				boolean estPuit = true;
-				for(int j =0;j<size1;j++) {
-					if(matrix[i][j]==1) {
-						estPuit = false;
-						break;
-					}
-				}
-				if(estPuit) {
-					noyau.add(i);
-					System.out.println(i+"�������");
-					break;
-				}
-			}
-			//�ҵ�ǰ��
-			pred.add(noyau.get(noyau.size()-1));
-			for(int i =0;i<size1;i++) {
-				if(matrix[i][noyau.get(noyau.size()-1)] == 1) {
-					pred.add(i);
-					System.out.println(noyau.get(noyau.size()-1) + "��ǰ������"+i);
-				}
-			}
-			int k,l;
-			k=0;
-			size1 = size1-pred.size();
-			matrix1 = new int[size1][size1];
-			for(int i =0;i<size1;i++) {
-				l=0;
-				if(i != pred.get(pred.size()-1)) {
-					for(int j=0; j<size1;j++) {
-						if(j!=pred.get(pred.size()-1)) {
-							matrix1[k][l] = matrix[i][j];
-							l++;
-						}
-					}
-				k++;
-				}
-			}
-			afficher1();
-			matrix = matrix1.clone();
-			for(int i = 0; i<noyau.size();i++) {
-				System.out.println(noyau.get(i));
-			}
-		}
-		for(int i = 0; i<noyau.size();i++) {
-			System.out.println(noyau.get(i));
-		}
-	}
 	
 	public void afficher1() {
 		System.out.print("  ");
@@ -580,20 +507,21 @@ public class Representation {
 			}
 			
 			
-			System.out.println("[1]Trouver la matrix non oriente");
-			System.out.println("[2]Dijkstra");
-			System.out.println("[3]Prim");
+			System.out.println("[1]La matrix non oriente");
+			System.out.println("[2]Dijkstra (chemin le plus court)");
+			System.out.println("[3]Prim (poids minimal)");
 			System.out.println("[4]Produit matricielle");
 			System.out.println("[5]Circuit/Chaine eulerien");
-			System.out.println("[6]Representation matricielle (doit saisir graph)");
-			System.out.println("[7]Numerotation (les numero peut etre inverse!!!)");
+			System.out.println("[6]Representation matricielle");
+			System.out.println("[7]Numerotation (les numeros peuvent etre inverse!!!)");
 			System.out.println("[8]Coloration");
-			System.out.println("[9]Composant connexe");
+			System.out.println("[9]Composante connexe forte");
 			System.out.println("[10]Noyau");
+			System.out.println("[11]Les couches");
 			
 			
 			int n = -1;
-			while(n<1 || n >10) n = inputkb.nextInt();
+			while(n<1 || n >11) n = inputkb.nextInt();
 			if(n==1) {
 				r.calcule();
 				r.afficher();
@@ -652,7 +580,7 @@ public class Representation {
 			}
 			
 			else if(n==5) {
-				r.circuitEulerien();
+				a.circuitEulerien();
 			}
 			else if(n==6) {
 				r.afficher1();
@@ -669,6 +597,18 @@ public class Representation {
 			}
 			else if(n==10) {
 				a.noyau();
+			}
+			else if(n==11) {
+				System.out.println("[0]Filtration par les Puits");
+				System.out.println("[1]Filtration par les Sources");
+				n = inputkb.nextInt();
+				while(n<0 || n >1) n = inputkb.nextInt();
+				if(n==0) {
+					a.numerotation_puits();
+				}
+				else if(n==1){
+					a.numerotation_sources();
+				}
 			}
 			
 			System.out.println("saisir un nouveau? [y]/[n]");
