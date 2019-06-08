@@ -513,7 +513,7 @@ public class Representation {
 			System.out.println("[4]Produit matricielle");
 			System.out.println("[5]Circuit/Chaine eulerien");
 			System.out.println("[6]Representation matricielle");
-			System.out.println("[7]Numerotation (les numeros peuvent etre inverse!!!)");
+			System.out.println("[7]Numerotation");
 			System.out.println("[8]Coloration");
 			System.out.println("[9]Composante connexe forte");
 			System.out.println("[10]Noyau");
@@ -586,7 +586,7 @@ public class Representation {
 				r.afficher1();
 			}
 			else if(n==7) {
-				r.numerotation();
+				a.numerotation_table(matrix);
 			}
 			
 			else if(n==8) {
@@ -599,14 +599,14 @@ public class Representation {
 				a.noyau();
 			}
 			else if(n==11) {
-				System.out.println("[0]Filtration par les Puits");
-				System.out.println("[1]Filtration par les Sources");
+				System.out.println("[1]Filtration par les Puits");
+				System.out.println("[2]Filtration par les Sources");
 				n = inputkb.nextInt();
-				while(n<0 || n >1) n = inputkb.nextInt();
-				if(n==0) {
+				while(n<1 || n >2) n = inputkb.nextInt();
+				if(n==1) {
 					a.numerotation_puits();
 				}
-				else if(n==1){
+				else if(n==2){
 					a.numerotation_sources();
 				}
 			}

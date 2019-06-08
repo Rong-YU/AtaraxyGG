@@ -238,6 +238,68 @@ public class Ataraxy {
 		
 	}
 	
+	public void numerotation_table(String input) {
+		int n =1 ;
+		Iterator<String> iter = new DepthFirstIterator<>(g);
+		ArrayList<String> numerotation = new ArrayList<String>();
+		ArrayList<String> sources = new ArrayList<String>();
+		ArrayList<String> couches = new ArrayList<String>();
+		while(true) {
+			while (iter.hasNext()) {
+				String vertex = iter.next();
+				if(g.inDegreeOf(vertex) == 0) {
+					sources.add(vertex);
+				}
+			}
+			String s = "{ ";
+			for(int i = 0; i<sources.size();i++) {
+				numerotation.add(sources.get(i)+"="+n);
+				s+=sources.get(i)+" ";
+				g.removeVertex(sources.get(i));
+				n+=1;
+				iter = new DepthFirstIterator<>(g);
+			}
+			s+="}";
+			couches.add(s);
+			sources.clear();
+			if(!iter.hasNext()) {
+				break;
+			}
+		}
+		
+		inputMatrix(input);
+		int size = numerotation.size();
+		int[][] matrix = new int[size][size];
+		for(int i =0; i<size; i++) {
+			for(int j =0; j<size; j++) {
+				if(g.containsEdge(Character.toString(numerotation.get(i).charAt(0)), Character.toString(numerotation.get(j).charAt(0)))) {
+		
+					
+					matrix[i][j]=1;
+					
+				}
+				else {
+					matrix[i][j]=0;
+				}
+			}
+		}
+		System.out.print("\t");
+		for(int a=0; a<size;a++) {
+			System.out.print(a+1+"\t");
+			
+		}
+		System.out.print("\n");
+		for(int i=0;i<size;i++) {
+			System.out.print(i+1+"\t");
+			for(int j=0;j<size;j++) {
+				System.out.print(matrix[i][j]+"\t");
+				}
+			System.out.print("\n");	
+		}
+		System.out.print("\n");	
+		
+	}
+	
 	public void numerotation_sources() {
 		int n =1 ;
 		Iterator<String> iter = new DepthFirstIterator<>(g);
@@ -272,7 +334,6 @@ public class Ataraxy {
 			n= i+1;
 			System.out.println("src"+n+" : "+couches.get(i));
 		}
-		
 	}
 	
 	public void numerotation_puits() {
@@ -483,8 +544,8 @@ public class Ataraxy {
 	
 	public static void main(String[] args) {
 		Ataraxy a = new Ataraxy();
-		a.inputMatrix("\\begin{array}{c|cccccccccccc}& A& B& C& D& E& F& G& H& I& J& K& L\\\\\\hline A& 0& 1& 0& 1& 1& 1& 0& 0& 0& 0& 0& 0\\\\B& 1& 0& 1& 1& 0& 0& 0& 1& 0& 0& 0& 1\\\\C& 0& 1& 0& 0& 1& 1& 0& 0& 0& 0& 1& 0\\\\D& 1& 1& 0& 0& 0& 1& 1& 0& 0& 1& 1& 0\\\\E& 1& 0& 1& 0& 0& 0& 0& 0& 1& 0& 1& 0\\\\F& 1& 0& 1& 1& 0& 0& 1& 0& 1& 1& 0& 0\\\\G& 0& 0& 0& 1& 0& 1& 0& 0& 0& 0& 1& 1\\\\H& 0& 1& 0& 0& 0& 0& 0& 0& 1& 0& 0& 0\\\\I& 0& 0& 0& 0& 1& 1& 0& 1& 0& 1& 1& 1\\\\J& 0& 0& 0& 1& 0& 1& 0& 0& 1& 0& 1& 0\\\\K& 0& 0& 1& 1& 1& 0& 1& 0& 1& 1& 0& 1\\\\L& 0& 1& 0& 0& 0& 0& 1& 0& 1& 0& 1& 0\\\\\\end{array}");
-		a.coloration_v2();
+		a.inputMatrix("\\begin{array}{c|cccccccccc}& A& B& C& D& E& F& G& H& I& J\\\\\\hline A& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\B& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\C& 0& 0& 0& 1& 1& 0& 0& 0& 0& 0\\\\D& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\E& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\F& 1& 0& 1& 0& 0& 0& 0& 0& 0& 0\\\\G& 1& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\H& 0& 1& 0& 1& 1& 0& 0& 0& 0& 0\\\\I& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\J& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\\\end{array}");
+		a.numerotation_table("\\begin{array}{c|cccccccccc}& A& B& C& D& E& F& G& H& I& J\\\\\\hline A& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\B& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\C& 0& 0& 0& 1& 1& 0& 0& 0& 0& 0\\\\D& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\E& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\F& 1& 0& 1& 0& 0& 0& 0& 0& 0& 0\\\\G& 1& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\H& 0& 1& 0& 1& 1& 0& 0& 0& 0& 0\\\\I& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\J& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\\\end{array}");
 	}
 }
 	
