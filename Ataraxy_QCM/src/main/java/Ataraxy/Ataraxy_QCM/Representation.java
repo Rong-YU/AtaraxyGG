@@ -590,7 +590,7 @@ public class Representation {
 			}
 			
 			else if(n==8) {
-				a.coloration();
+				a.coloration_v2();
 			}
 			else if(n==9) {
 				a.connexite();
@@ -611,7 +611,7 @@ public class Representation {
 				}
 			}
 			
-			System.out.println("saisir un nouveau? [y]/[n]");
+			System.out.println("Continuer? [y]/[n]");
 			String rep = inputkb.next().toLowerCase();
 			while(!(rep.equals("y")||rep.equals("n"))) {
 				System.out.println("wrong"+rep);

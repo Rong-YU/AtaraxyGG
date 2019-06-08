@@ -468,13 +468,16 @@ public class Ataraxy {
         for (Map.Entry<String, Integer> entry : colored.entrySet()) {
 			dast.put(entry.getKey(),String.valueOf(entry.getValue()));
 		}
+        System.out.print("Som	");
         for (Map.Entry<String, String> entry : dast.entrySet()) {
 			System.out.print(entry.getKey() + " ");
 		}
         System.out.println();
+        System.out.print("Coul	");
         for (Map.Entry<String, String> entry : dast.entrySet()) {
 			System.out.print(entry.getValue() + " ");
 		}
+        System.out.println();
 	}
 	
 	
