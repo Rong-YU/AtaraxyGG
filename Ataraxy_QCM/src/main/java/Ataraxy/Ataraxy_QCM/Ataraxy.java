@@ -541,11 +541,126 @@ public class Ataraxy {
         System.out.println();
 	}
 	
+	public void pre_su() {
+		while(true) {
+			Scanner inputkb = new Scanner(System.in);
+			System.out.println("Sommet?");
+			String vertex = inputkb.nextLine();
+			vertex = vertex.toUpperCase();
+			System.out.println("[1]Descendant (+)");
+			System.out.println("[2]Ascendant (-)");
+			System.out.println("[3]Successeur (+1)");
+			System.out.println("[4]Predecesseur (-1)");
+			int n = inputkb.nextInt();
+			//Descentant
+			if(n ==1) {
+				ArrayList<String> list_des= new ArrayList<String>();
+				list_des.add(vertex);
+				Iterator<String> iter = new DepthFirstIterator<>(g);
+				for(int i=0;i<list_des.size();i++) {
+					while (iter.hasNext()) {
+						String targetVertex = iter.next();
+						if(g.containsEdge(list_des.get(i),targetVertex) && !list_des.contains(targetVertex)) {
+							list_des.add(targetVertex);
+						}
+					}
+					iter = new DepthFirstIterator<>(g);
+		
+				}
+				for(String vertex1:list_des) {
+					System.out.print(vertex1 + " ");
+				}
+			}
+			else if(n ==2) {
+				ArrayList<String> list_des= new ArrayList<String>();
+				list_des.add(vertex);
+				Iterator<String> iter = new DepthFirstIterator<>(g);
+				for(int i=0;i<list_des.size();i++) {
+					while (iter.hasNext()) {
+						String targetVertex = iter.next();
+						if(g.containsEdge(targetVertex,list_des.get(i)) && !list_des.contains(targetVertex)) {
+							list_des.add(targetVertex);
+						}
+					}
+					iter = new DepthFirstIterator<>(g);
+		
+				}
+				for(String vertex1:list_des) {
+					System.out.print(vertex1 + " ");
+				}
+			}
+			else if(n ==3) {
+				System.out.println("combien de generation?");
+				int generation = inputkb.nextInt();
+				ArrayList<String> list_des= new ArrayList<String>();
+				list_des.add(vertex);
+				ArrayList<String> new_list_des= new ArrayList<String>();
+				Iterator<String> iter = new DepthFirstIterator<>(g);
+				for(int i=0;i<generation;i++) {
+					for(int j = 0; j<list_des.size();j++) {
+						while (iter.hasNext()) {
+							
+							String targetVertex = iter.next();
+							if(g.containsEdge(list_des.get(j),targetVertex) && !new_list_des.contains(targetVertex)) {
+								new_list_des.add(targetVertex);
+							}
+						}
+					}
+					iter = new DepthFirstIterator<>(g);
+					list_des.clear();
+					list_des = (ArrayList<String>) new_list_des.clone();
+					new_list_des.clear();
+		
+				}
+				for(String vertex1:list_des) {
+					System.out.print(vertex1 + " ");
+				}
+			
+			}
+			else if(n ==4) {
+				System.out.println("combien de generation?");
+				int generation = inputkb.nextInt();
+				ArrayList<String> list_des= new ArrayList<String>();
+				list_des.add(vertex);
+				ArrayList<String> new_list_des= new ArrayList<String>();
+				Iterator<String> iter = new DepthFirstIterator<>(g);
+				for(int i=0;i<generation;i++) {
+					for(int j = 0; j<list_des.size();j++) {
+						while (iter.hasNext()) {
+							String targetVertex = iter.next();
+							if(g.containsEdge(targetVertex,list_des.get(j)) && !new_list_des.contains(targetVertex)) {
+								new_list_des.add(targetVertex);
+							}
+						}
+					}
+					iter = new DepthFirstIterator<>(g);
+					list_des.clear();
+					list_des = (ArrayList<String>) new_list_des.clone();
+		
+				}
+				for(String vertex1:list_des) {
+					System.out.print(vertex1 + " ");
+				}
+			
+			}
+			System.out.println("");
+			System.out.println("Continuer avec l'autre sommet? [y]/[n]");
+			String rep = inputkb.next().toLowerCase();
+			while(!(rep.equals("y")||rep.equals("n"))) {
+				System.out.println("wrong"+rep);
+				rep = inputkb.next().toLowerCase();
+				}
+			if(rep.equals("n")) {
+				break;
+			}
+		}
+	}
+	
 	
 	public static void main(String[] args) {
 		Ataraxy a = new Ataraxy();
-		a.inputMatrix("\\begin{array}{c|cccccccccc}& A& B& C& D& E& F& G& H& I& J\\\\\\hline A& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\B& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\C& 0& 0& 0& 1& 1& 0& 0& 0& 0& 0\\\\D& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\E& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\F& 1& 0& 1& 0& 0& 0& 0& 0& 0& 0\\\\G& 1& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\H& 0& 1& 0& 1& 1& 0& 0& 0& 0& 0\\\\I& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\J& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\\\end{array}");
-		a.numerotation_table("\\begin{array}{c|cccccccccc}& A& B& C& D& E& F& G& H& I& J\\\\\\hline A& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\B& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\C& 0& 0& 0& 1& 1& 0& 0& 0& 0& 0\\\\D& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\E& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\F& 1& 0& 1& 0& 0& 0& 0& 0& 0& 0\\\\G& 1& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\H& 0& 1& 0& 1& 1& 0& 0& 0& 0& 0\\\\I& 0& 0& 0& 0& 1& 0& 0& 0& 0& 0\\\\J& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\\\\\end{array}");
+		a.inputMatrix("\\begin{array}{c|ccc}& A& B& C\\\\\\hline A& 0& 1& 0\\\\B& 1& 0& 1\\\\C& 0& 1& 0\\\\\\end{array}");
+		a.pre_su();
 	}
 }
 	

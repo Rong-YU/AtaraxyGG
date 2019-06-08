@@ -518,10 +518,11 @@ public class Representation {
 			System.out.println("[9]Composante connexe forte");
 			System.out.println("[10]Noyau");
 			System.out.println("[11]Les couches");
+			System.out.println("[12]Descentant/Ascentant...");
 			
 			
 			int n = -1;
-			while(n<1 || n >11) n = inputkb.nextInt();
+			while(n<1 || n >12) n = inputkb.nextInt();
 			if(n==1) {
 				r.calcule();
 				r.afficher();
@@ -609,6 +610,9 @@ public class Representation {
 				else if(n==2){
 					a.numerotation_sources();
 				}
+			}
+			else if(n==12) {
+				a.pre_su();
 			}
 			
 			System.out.println("Continuer? [y]/[n]");
